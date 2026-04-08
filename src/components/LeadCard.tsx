@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Lead } from "@/lib/types";
 
 function formatRelativeTime(dateString: string): string {
@@ -18,6 +19,15 @@ function formatRelativeTime(dateString: string): string {
   return `${weeks}w ago`;
 }
 
+function isValidUrl(str: string): boolean {
+  try {
+    const url = new URL(str);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export default function LeadCard({
   lead,
   onFavorite,
@@ -27,6 +37,8 @@ export default function LeadCard({
   onFavorite: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
@@ -50,21 +62,41 @@ export default function LeadCard({
       </div>
 
       {lead.companyUrl && (
-        <a
-          href={lead.companyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-1 block truncate text-sm text-indigo-600 hover:underline"
-        >
-          {lead.companyUrl}
-        </a>
+        isValidUrl(lead.companyUrl) ? (
+          <a
+            href={lead.companyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 block truncate text-sm text-indigo-600 hover:underline"
+          >
+            {lead.companyUrl}
+          </a>
+        ) : (
+          <span className="mt-1 block truncate text-sm text-gray-400">
+            {lead.companyUrl}
+          </span>
+        )
       )}
 
-      <div className="mt-3 max-h-40 overflow-y-auto">
+      <div className="mt-3">
         {lead.aiBrief ? (
-          <p className="whitespace-pre-line text-sm leading-relaxed text-gray-700">
-            {lead.aiBrief}
-          </p>
+          <>
+            <p
+              className={`whitespace-pre-line text-sm leading-relaxed text-gray-700 ${
+                !expanded ? "line-clamp-3" : ""
+              }`}
+            >
+              {lead.aiBrief}
+            </p>
+            {lead.aiBrief.length > 200 && (
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className="mt-1 text-xs font-medium text-indigo-600 hover:text-indigo-800"
+              >
+                {expanded ? "Show less" : "Show more"}
+              </button>
+            )}
+          </>
         ) : (
           <p className="text-sm italic text-gray-400">
             No analysis generated yet

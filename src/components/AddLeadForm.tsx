@@ -25,35 +25,41 @@ export default function AddLeadForm({
     setError(null);
 
     try {
+      const trimmedName = companyName.trim();
+      const trimmedUrl = companyUrl.trim();
+
       const createRes = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companyName: companyName.trim(), companyUrl: companyUrl.trim() || undefined }),
+        body: JSON.stringify({ companyName: trimmedName, companyUrl: trimmedUrl || undefined }),
       });
 
       if (!createRes.ok) {
-        const data = await createRes.json();
-        throw new Error(data.error || "Failed to create lead");
+        const data = await createRes.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to save lead");
       }
 
       const { lead } = await createRes.json();
 
-      const analyzeRes = await fetch("/api/leads/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ leadId: lead.id }),
-      });
+      try {
+        const analyzeRes = await fetch("/api/leads/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ leadId: lead.id }),
+        });
 
-      if (!analyzeRes.ok) {
-        const data = await analyzeRes.json();
-        throw new Error(data.error || "Failed to analyze lead");
+        if (!analyzeRes.ok) {
+          setError("Lead saved, but could not reach AI service. You can retry analysis later.");
+        }
+      } catch {
+        setError("Lead saved, but could not reach AI service. You can retry analysis later.");
       }
 
       setCompanyName("");
       setCompanyUrl("");
       onLeadAdded();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Failed to save lead");
     } finally {
       setIsLoading(false);
     }
@@ -70,14 +76,16 @@ export default function AddLeadForm({
             onChange={(e) => setCompanyName(e.target.value)}
             placeholder="e.g. Stripe, Notion, Figma"
             required
-            className="rounded-lg border border-gray-300 px-4 py-2.5 transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+            disabled={isLoading}
+            className="rounded-lg border border-gray-300 px-4 py-2.5 transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
           />
           <input
             type="text"
             value={companyUrl}
             onChange={(e) => setCompanyUrl(e.target.value)}
             placeholder="https://example.com"
-            className="rounded-lg border border-gray-300 px-4 py-2.5 transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+            disabled={isLoading}
+            className="rounded-lg border border-gray-300 px-4 py-2.5 transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
         <div className="mt-4">

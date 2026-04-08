@@ -115,7 +115,18 @@ export default function Home() {
         </div>
 
         {error && (
-          <p className="mt-4 text-sm text-red-600">{error}</p>
+          <div className="mt-4 flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+            <p className="text-sm text-red-700">Failed to load leads. Please refresh.</p>
+            <button
+              onClick={() => {
+                setIsLoading(true);
+                fetchLeads();
+              }}
+              className="ml-4 shrink-0 rounded-md bg-red-100 px-3 py-1 text-sm font-medium text-red-700 transition hover:bg-red-200"
+            >
+              Retry
+            </button>
+          </div>
         )}
 
         <div className="mt-4">
