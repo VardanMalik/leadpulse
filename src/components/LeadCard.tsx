@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Lead } from "@/lib/types";
 
 function formatRelativeTime(dateString: string): string {
@@ -38,6 +38,14 @@ export default function LeadCard({
   onDelete: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const starRef = useRef<HTMLButtonElement>(null);
+
+  function handleFavorite() {
+    starRef.current?.classList.remove("animate-scale-bounce");
+    void starRef.current?.offsetWidth;
+    starRef.current?.classList.add("animate-scale-bounce");
+    onFavorite(lead.id);
+  }
 
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
@@ -46,8 +54,9 @@ export default function LeadCard({
           {lead.companyName}
         </h3>
         <button
-          onClick={() => onFavorite(lead.id)}
-          className="shrink-0 transition"
+          ref={starRef}
+          onClick={handleFavorite}
+          className="shrink-0 transition-colors duration-150"
         >
           {lead.isFavorite ? (
             <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">

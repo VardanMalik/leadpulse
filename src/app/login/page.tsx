@@ -17,7 +17,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <div className="w-full max-w-md px-4">
-        <div className="bg-white rounded-2xl shadow-xl p-10">
+        <div className="bg-white rounded-2xl shadow-xl p-10 animate-fade-in">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               LeadPulse
@@ -29,7 +29,7 @@ export default function LoginPage() {
 
           <button
             onClick={() => signIn("google", { callbackUrl: "/" })}
-            className="w-full flex items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-all hover:shadow-md hover:border-gray-400 cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-all hover:shadow-md hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path

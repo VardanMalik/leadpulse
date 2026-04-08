@@ -76,7 +76,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white shadow-sm">
+      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/80 shadow-sm backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <span className="text-xl font-bold text-indigo-600">LeadPulse</span>
           <div className="flex items-center gap-4">
@@ -91,12 +91,12 @@ export default function Home() {
                 {session?.user?.name?.[0] ?? "?"}
               </div>
             )}
-            <span className="text-sm text-gray-700">
+            <span className="hidden text-sm text-gray-700 sm:inline">
               {session?.user?.name}
             </span>
             <button
               onClick={() => signOut()}
-              className="text-sm text-gray-500 transition hover:text-gray-700"
+              className="rounded-md px-3 py-1.5 text-sm text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
             >
               Sign Out
             </button>
@@ -140,13 +140,18 @@ export default function Home() {
             <EmptyState />
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {leads.map((lead) => (
-                <LeadCard
+              {leads.map((lead, i) => (
+                <div
                   key={lead.id}
-                  lead={lead}
-                  onFavorite={handleFavorite}
-                  onDelete={handleDelete}
-                />
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  <LeadCard
+                    lead={lead}
+                    onFavorite={handleFavorite}
+                    onDelete={handleDelete}
+                  />
+                </div>
               ))}
             </div>
           )}

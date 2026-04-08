@@ -92,7 +92,7 @@ export default function AddLeadForm({
           <button
             type="submit"
             disabled={isLoading}
-            className={`inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 font-medium text-white transition hover:bg-indigo-700 ${
+            className={`inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 font-medium text-white transition hover:bg-indigo-700 md:w-auto ${
               isLoading ? "cursor-not-allowed opacity-50" : ""
             }`}
           >
@@ -106,7 +106,13 @@ export default function AddLeadForm({
             )}
           </button>
         </div>
-        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        <div
+          className={`grid transition-all duration-200 ease-out ${
+            error ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          }`}
+        >
+          <p className="overflow-hidden text-sm text-red-600">{error}</p>
+        </div>
       </form>
     </div>
   );
